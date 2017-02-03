@@ -53,8 +53,9 @@ class Superlogin extends EventEmitter2 {
 			config.endpoints.push(window.location.host);
 		}
 		config.providers = config.providers || [];
-
-		if (config.storage === 'session') {
+		if (typeof config.storage === 'object' && config.storage.getItem && config.storage.setItem) {
+			this.storage = config.storage;
+		} else if (config.storage === 'session') {
 			this.storage = window.sessionStorage;
 		} else {
 			this.storage = window.localStorage;
@@ -63,7 +64,13 @@ class Superlogin extends EventEmitter2 {
 		this._config = config;
 
 		// Setup the new session
-		this._session = JSON.parse(this.storage.getItem('superlogin.session'));
+		const item = this.storage.getItem('superlogin.session');
+
+		if (item.then) {
+			item.then(result => { this._session = JSON.parse(result); });
+		} else {
+			this._session = JSON.parse(item);
+		}
 
 		this._httpInterceptor();
 
@@ -146,7 +153,14 @@ class Superlogin extends EventEmitter2 {
 
 	getSession() {
 		if (!this._session) {
-			this._session = JSON.parse(this.storage.getItem('superlogin.session'));
+			// Setup the new session
+			const item = this.storage.getItem('superlogin.session');
+
+			if (item.then) {
+				item.then(result => { this._session = JSON.parse(result); });
+			} else {
+				this._session = JSON.parse(item);
+			}
 		}
 		return this._session ? Object.assign(this._session) : null;
 	}
