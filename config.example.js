@@ -7,7 +7,9 @@ var config = {
   endpoints: ['api.example.com'],
   // Set this to true if you do not want the URL bar host automatically added to the list
   noDefaultEndpoint: false,
-  // Where to save your session token: localStorage ('local') or sessionStorage ('session'), default: 'local'
+  // Where to save your session token: localStorage ('local') or sessionStorage ('session'),
+  // or an object that implements the localStorage interface (setItem, getItem)
+  // default: 'local'
   storage: 'local',
   // The authentication providers that are supported by your SuperLogin host
   providers: ['facebook', 'twitter'],
