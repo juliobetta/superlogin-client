@@ -53,8 +53,9 @@ class Superlogin extends EventEmitter2 {
 			config.endpoints.push(window.location.host);
 		}
 		config.providers = config.providers || [];
-
-		if (config.storage === 'session') {
+		if (typeof config.storage === 'object' && config.storage.getItem && config.storage.setItem) {
+			this.storage = config.storage;
+		} else if (config.storage === 'session') {
 			this.storage = window.sessionStorage;
 		} else {
 			this.storage = window.localStorage;
