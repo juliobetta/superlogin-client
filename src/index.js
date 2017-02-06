@@ -14,11 +14,10 @@ function capitalizeFirstLetter(string) {
 	return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-function checkEndpoint(url, endpoints) {
-	const parser = window.document.createElement('a');
-	parser.href = url;
+function checkEndpoint(addr, endpoints) {
+	const url = new URL(addr);
 	for (let i = 0; i < endpoints.length; i += 1) {
-		if (parser.host === endpoints[i]) {
+		if (url.host === endpoints[i]) {
 			return true;
 		}
 	}
