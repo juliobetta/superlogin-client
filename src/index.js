@@ -17,7 +17,7 @@ function capitalizeFirstLetter(string) {
 function checkEndpoint(addr, endpoints) {
 	const url = new URL(addr);
 	for (let i = 0; i < endpoints.length; i += 1) {
-		if (url.host === endpoints[i]) {
+		if (`${url.protocol}//${url.host}` === endpoints[i]) {
 			return true;
 		}
 	}
@@ -64,12 +64,7 @@ class Superlogin extends EventEmitter2 {
 
 		// Setup the new session
 		const item = this.storage.getItem('superlogin.session');
-
-		if (item.then) {
-			item.then(result => { this._session = JSON.parse(result); });
-		} else {
-			this._session = JSON.parse(item);
-		}
+		this._session = JSON.parse(item);
 
 		this._httpInterceptor();
 
@@ -154,12 +149,7 @@ class Superlogin extends EventEmitter2 {
 		if (!this._session) {
 			// Setup the new session
 			const item = this.storage.getItem('superlogin.session');
-
-			if (item.then) {
-				item.then(result => { this._session = JSON.parse(result); });
-			} else {
-				this._session = JSON.parse(item);
-			}
+			this._session = JSON.parse(item);
 		}
 		return this._session ? Object.assign(this._session) : null;
 	}
