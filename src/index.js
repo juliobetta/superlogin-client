@@ -101,29 +101,10 @@ class Superlogin extends EventEmitter2 {
 			});
 		};
 
-		const responseError = error => {
-			const config = this.getConfig();
-
-			// if there is not config obj in in the error it means we cannot check the endpoints.
-			// This happens for example if there is no connection at all because axion just forwards the raw error.
-			if (!error || !error.config) {
-				return Promise.reject(error);
-			}
-
-			// If there is an unauthorized error from one of our endpoints and we are logged in...
-			if (checkEndpoint(error.config.url, config.endpoints) &&
-				error.response.status === 401 && this.authenticated()) {
-				debug.warn('Not authorized');
-				this._onLogout('Session expired');
-			}
-			return Promise.reject(error);
-		};
 		// clear interceptors from a previous configure call
 		this._http.interceptors.request.eject(this._httpRequestInterceptor);
-		this._http.interceptors.response.eject(this._httpResponseInterceptor);
 
 		this._httpRequestInterceptor = this._http.interceptors.request.use(request.bind(this));
-		this._httpResponseInterceptor = this._http.interceptors.response.use(null, responseError.bind(this));
 	}
 
 	authenticated() {
